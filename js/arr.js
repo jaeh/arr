@@ -18,6 +18,7 @@ window.onload = function () {
     canvas.id = 'waves';
     canvas.style.position = 'fixed';
     canvas.style.bottom = 0;
+    canvas.style.left = 0;
 
     document.body.style['min-width'] = 300;
 
@@ -28,7 +29,7 @@ window.onload = function () {
       , _cradiusy = 50
       , _amplitude = 23
       , _wavelength = 2500
-      , _w = screen.width
+      , _w = screen.width + (screen.width * 0.2)
       , _h = 155
       , _twopi = 2 * Math.PI
       , _wspace = 7
@@ -80,8 +81,10 @@ window.onload = function () {
         
         ctx.drawImage(ship.img, 15, _tdy + _h - ship.yminus, ship.width, ship.height);
 
-        ctx.font = 'italic 15px Verdana';
-        ctx.fillText("A PIRATE I WAS MEANT TO BE!", document.body.clientWidth - 250, 50);
+        if (document.body.clientWidth > 400) {
+          ctx.font = 'italic 15px Verdana';
+          ctx.fillText("A PIRATE I WAS MEANT TO BE!", document.body.clientWidth - 250, 50);
+        }
         //foreground wave
         p.fill(15, 15, 15);
 
@@ -97,8 +100,9 @@ window.onload = function () {
         }
         
         times_animated = 1;
-        
+      
         _wcount += _wspace;
+      
       }
     }
 
@@ -109,16 +113,27 @@ window.onload = function () {
       p.frameRate( 27 );
     }
 
-	//posts is the id for soup.io, this needs to be individualised
-    var wrapper = document.getElementById('posts');
-  
-    if (wrapper && typeof wrapper.addEventListener === 'function') {
-      wrapper.addEventListener('mouseover', function (evt) {
+    //posts and admin-panel are the ids for soup.io, 
+    //this needs to be individualised for each platform
+    var wrappers =[
+        document.getElementById('posts')
+      , document.getElementById('admin-sidebar')
+    ];
+
+    wrappers.forEach(function(wrapper) {
+
+      if (wrapper && typeof wrapper.addEventListener === 'function') {
+        wrapper.addEventListener('mouseover', function (evt) {
         if (times_animated) { anim_playing = false; }
-      }, false);
-      wrapper.addEventListener('mouseout', function (evt) {
+        canvas.style['z-index'] = 0;
+        wrapper.style['z-index'] = 10;
+        }, false);
+        wrapper.addEventListener('mouseout', function (evt) {
         if (times_animated) { anim_playing = true; } 
-      }, false);
-    }
+        canvas.style['z-index'] = 10;
+        wrapper.style['z-index'] = 0;
+        }, false);
+      }
+    });
   });
 }
